@@ -1,0 +1,52 @@
+- name: download rust installer
+  get_url:
+    url: https://sh.rustup.rs
+    dest: /tmp/sh.rustup.rs
+    mode: '0755'
+    force: 'yes'
+  tags:
+    - install
+    - dep
+    - rust
+    - alacritty
+
+- name: install rust/cargo
+  shell: /tmp/sh.rustup.rs -y
+  tags:
+    - install
+    - dep
+    - rust
+    - alacritty
+
+- name: source rust env
+  shell: [ -f ~/.cargo/env ] && source $HOME/.cargo/env
+  tags: 
+    - install
+    - dep
+    - rust
+    - alacritty
+
+- name: install dependencies
+  become: true
+  apt: 
+    name: ["cmake", "pkg-config", "libfreetype6-dev", "libfontconfig1-dev", "libxcb-xfixes0-dev", "libxkbcommon-dev", "python3"]
+  tags:
+    - install
+    - dep
+
+- name: clone alacritty 
+  ansible.builtin.git:
+    repo: https://github.com/alacritty/alacritty.git
+    dest: /tmp/alacritty
+  tags:
+    - install
+    - alacritty
+
+- name: install alacritty
+  shell: cd /tmp/alacritty && cargo build --release
+  tags:
+    - install
+    - alacritty
+
+- name: install theme
+  shell: mkdir -p ~/.config/alacritty/themes && git clone https://github.com/alacritty/alacritty-theme ~/.config/alacritty/themes
