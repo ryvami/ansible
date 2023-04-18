@@ -1,0 +1,35 @@
+- name: Install zsh
+  become: true
+  apt: 
+    name: zsh
+  tags:
+    - zsh
+
+- name: Change shell
+  shell: zsh
+  tags:
+    - install
+    - zsh
+
+- name: Install ohmyzsh
+  shell: curl -L https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
+  tags:
+    - install
+    - zsh
+
+- name: Install powerlevel10k
+  ansible.builtin.git:
+    depth: 1
+    repo: https://github.com/romkatv/powerlevel10k.git
+    dest: ~/.oh-my-zsh/custom/themes/powerlevel10k
+  tags:
+    - install
+    - zsh
+
+- name: Install the zsh plugin autosuggestions
+  ansible.builtin.git:
+    repo: https://github.com/zsh-users/zsh-autosuggestions.git
+    dest: ~/.oh-my-zsh/plugins/zsh-autosuggestions
+  tags:
+    - install
+    - zsh
